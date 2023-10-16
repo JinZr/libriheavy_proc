@@ -1,7 +1,7 @@
 import argparse
 
 import lhotse
-from lhotse import CutSet, load_manifest_lazy
+from lhotse import CutSet, MonoCut, load_manifest_lazy
 from tqdm import tqdm
 
 parser = argparse.ArgumentParser()
