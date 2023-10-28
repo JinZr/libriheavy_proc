@@ -48,7 +48,6 @@ if __name__ == "__main__":
     parser.add_argument(
         "--ir",
         "-i",
-        default=None,
         help="Directory of IR files",
         type=str,
         default="/star-data/rui/LibriheavyCSS/FAST-RIR/code_new/Generated_RIRs",
