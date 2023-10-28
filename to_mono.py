@@ -1,6 +1,7 @@
 import argparse
 import os
 import random
+from copy import deepcopy
 
 from lhotse import load_manifest_lazy
 from lhotse.cut import CutSet
@@ -42,8 +43,8 @@ if not os.path.exists(audio_path):
     os.makedirs(audio_path)
 
 for cut in tqdm(cutset, desc="Processing cuts"):
+    out_cut = deepcopy(cut)
     try:
-        out_cut = cut.drop_features()
         snrs = [random.uniform(-5, 5) for _ in range(len(cut.tracks))]
         for i, (track, snr) in enumerate(zip(out_cut.tracks, snrs)):
             if i == 0:
