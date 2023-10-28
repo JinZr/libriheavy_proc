@@ -112,28 +112,57 @@ if __name__ == "__main__":
         new_cut = deepcopy(cut)
         try:
             for index, c in enumerate(tracks):
-                try:
-                    speech_path = c.cut.recording.sources[0].source
-                except Exception as e:
-                    print(cut.id)
-                filepath, filename = os.path.split(speech_path)
-                output_path = (
-                    filepath.replace(speech_folder, output_folder) + f"/{cut.id}/"
-                )
-                if not os.path.exists(os.path.split(output_path)[0]):
-                    os.makedirs(os.path.split(output_path)[0])
-                augment_data(speech_path, output_path + filename, ir_sample)
+                if c.type == "MonoCut":
+                    try:
+                        speech_path = c.cut.recording.sources[0].source
+                    except Exception as e:
+                        print(cut.id)
+                    filepath, filename = os.path.split(speech_path)
+                    output_path = (
+                        filepath.replace(speech_folder, output_folder) + f"/{cut.id}/"
+                    )
+                    if not os.path.exists(os.path.split(output_path)[0]):
+                        os.makedirs(os.path.split(output_path)[0])
+                    augment_data(speech_path, output_path + filename, ir_sample)
 
-                update()
+                    update()
 
-                new_cut.tracks[index].cut.recording.sources[0].source = (
-                    output_path + filename
-                )
-                # pool.apply_async(
-                # augment_data,
-                # args=(speech_path, output_path + filename, ir_sample),
-                # callback=update,
-                # )
+                    new_cut.tracks[index].cut.recording.sources[0].source = (
+                        output_path + filename
+                    )
+                    # pool.apply_async(
+                    # augment_data,
+                    # args=(speech_path, output_path + filename, ir_sample),
+                    # callback=update,
+                    # )
+                elif c.type == "MixedCut":
+                    t_tracks = c.tracks
+                    for i_index, c_c in enumerate(t_tracks):
+                        if c_c.type == "MonoCut":
+                            try:
+                                speech_path = c_c.cut.recording.sources[0].source
+                            except Exception as e:
+                                print(cut.id)
+                            filepath, filename = os.path.split(speech_path)
+                            output_path = (
+                                filepath.replace(speech_folder, output_folder)
+                                + f"/{cut.id}/"
+                            )
+                            if not os.path.exists(os.path.split(output_path)[0]):
+                                os.makedirs(os.path.split(output_path)[0])
+                            augment_data(speech_path, output_path + filename, ir_sample)
+
+                            update()
+
+                            new_cut.tracks[index].cut.tracks[
+                                i_index
+                            ].cut.recording.sources[0].source = (output_path + filename)
+                            # pool.apply_async(
+                            # augment_data,
+                            # args=(speech_path, output_path + filename, ir_sample),
+                            # callback=update,
+                            # )
+
         except Exception as e:
             print(str(e))
             # pool.close()
