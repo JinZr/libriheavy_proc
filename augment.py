@@ -62,7 +62,6 @@ if __name__ == "__main__":
     parser.add_argument(
         "--out",
         "-o",
-        required=True,
         help="Output folder path",
         type=str,
         default="/star-data/rui/libriheavy_reverb",
