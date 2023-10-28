@@ -42,11 +42,6 @@ def augment_data(speech_path, output_path, irfile_path):
     sf.write(output_path, speech, fs_s)
 
 
-def proc_cut(cut):
-
-
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog="augment", description="""Script to augment dataset"""
@@ -168,9 +163,9 @@ if __name__ == "__main__":
                             for ii_index, c_c_c in enumerate(t_t_tracks):
                                 if c_c_c.type == "MonoCut":
                                     try:
-                                        speech_path = (
-                                            c_c_c.cut.recording.sources[0].source
-                                        )
+                                        speech_path = c_c_c.cut.recording.sources[
+                                            0
+                                        ].source
                                     except Exception as e:
                                         print(cut.id)
                                     filepath, filename = os.path.split(speech_path)
@@ -186,9 +181,11 @@ if __name__ == "__main__":
                                         speech_path, output_path + filename, ir_sample
                                     )
 
-                                    new_cut.tracks[index].cut.tracks[i_index].cut.tracks[
-                                        ii_index
-                                    ].cut.recording.sources[0].source = (
+                                    new_cut.tracks[index].cut.tracks[
+                                        i_index
+                                    ].cut.tracks[ii_index].cut.recording.sources[
+                                        0
+                                    ].source = (
                                         output_path + filename
                                     )
                                     # pool.apply_async(
@@ -202,8 +199,9 @@ if __name__ == "__main__":
                                         if c_c_c_c.type == "MonoCut":
                                             try:
                                                 speech_path = (
-                                                    c_c_c_c.cut.recording.sources[0]
-                                                    .source
+                                                    c_c_c_c.cut.recording.sources[
+                                                        0
+                                                    ].source
                                                 )
                                             except Exception as e:
                                                 print(cut.id)
@@ -230,11 +228,11 @@ if __name__ == "__main__":
 
                                             new_cut.tracks[index].cut.tracks[
                                                 i_index
-                                            ].cut.tracks[
-                                                ii_index
-                                            ].cut.tracks[
+                                            ].cut.tracks[ii_index].cut.tracks[
                                                 iii_index
-                                            ].cut.recording.sources[0].source = (
+                                            ].cut.recording.sources[
+                                                0
+                                            ].source = (
                                                 output_path + filename
                                             )
                                             # pool.apply_async(
