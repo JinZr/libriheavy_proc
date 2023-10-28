@@ -1,11 +1,12 @@
 import argparse
 import os
 import random
+from copy import deepcopy
 from multiprocessing import Pool
 
 import numpy as np
 import soundfile as sf
-from lhotse import load_manifest_lazy
+from lhotse import CutSet, load_manifest_lazy
 from tqdm import tqdm
 
 import utility
@@ -60,6 +61,13 @@ if __name__ == "__main__":
         type=str,
     )
     parser.add_argument(
+        "--manifest-out",
+        "-mo",
+        help="Manifest output path",
+        type=str,
+        required=True,
+    )
+    parser.add_argument(
         "--out",
         "-o",
         help="Output folder path",
@@ -88,6 +96,7 @@ if __name__ == "__main__":
     ]
 
     cutset = load_manifest_lazy(manifest)
+    new_cuts = []
     pbar = tqdm(total=len(cutset))
 
     def update(*a):
@@ -100,15 +109,13 @@ if __name__ == "__main__":
     for cut in cutset:
         ir_sample = random.choice(irlist)
         tracks = cut.tracks
+        new_cut = deepcopy(cut)
         try:
-            for c in tracks:
+            for index, c in enumerate(tracks):
                 try:
                     speech_path = c.cut.recording.sources[0].source
                 except Exception as e:
                     print(cut.id)
-                    print(c.id)
-                    print(e)
-                    exit(1)
                 filepath, filename = os.path.split(speech_path)
                 output_path = (
                     filepath.replace(speech_folder, output_folder) + f"/{cut.id}/"
@@ -116,7 +123,12 @@ if __name__ == "__main__":
                 if not os.path.exists(os.path.split(output_path)[0]):
                     os.makedirs(os.path.split(output_path)[0])
                 augment_data(speech_path, output_path + filename, ir_sample)
+
                 update()
+
+                new_cut.tracks[index].cut.recording.sources[0].source = (
+                    output_path + filename
+                )
                 # pool.apply_async(
                 # augment_data,
                 # args=(speech_path, output_path + filename, ir_sample),
@@ -124,6 +136,11 @@ if __name__ == "__main__":
                 # )
         except Exception as e:
             print(str(e))
-            pool.close()
-    pool.close()
-    pool.join()
+            # pool.close()
+        new_cuts.append(new_cut)
+    # pool.close()
+    # pool.join()
+    pbar.close()
+    print("Saving manifest...")
+    new_cutset = CutSet.from_cuts(new_cuts)
+    new_cutset.to_json(args.manifest_out)
