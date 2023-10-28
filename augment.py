@@ -107,6 +107,11 @@ if __name__ == "__main__":
 
     # pool = Pool(processes=nthreads)
     for cut in cutset:
+        mono_cut = cut.to_mono()
+        mono_cut.save_audio(
+            output_folder + f"/{cut.id}/" + "original.flac", encoding="flac"
+        )
+        exit()
         ir_samples = random.choices(irlist, k=len(cut.tracks))
         tracks = cut.tracks
         new_cut = deepcopy(cut)
