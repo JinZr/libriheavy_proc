@@ -105,13 +105,15 @@ if __name__ == "__main__":
             tracks = cut.tracks
             for c in tracks:
                 speech_path = c.cut.recording.sources[0].source
-                # filepath, filename = os.path.split(speech_path)
-                output_path = speech_path.replace(speech_folder, output_folder)
+                filepath, filename = os.path.split(speech_path)
+                output_path = (
+                    filepath.replace(speech_folder, output_folder) + f"/{cut.id}/"
+                )
                 if not os.path.exists(os.path.split(output_path)[0]):
                     os.makedirs(os.path.split(output_path)[0])
                 pool.apply_async(
                     augment_data,
-                    args=(speech_path, output_path, ir_sample),
+                    args=(speech_path, output_path + filename, ir_sample),
                     callback=update,
                 )
     except Exception as e:
