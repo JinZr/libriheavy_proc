@@ -96,13 +96,12 @@ if __name__ == "__main__":
     speech_folder = "/star-kw/data/libri-light/"
     output_folder = "/star-data/rui/libriheavy_reverb/"
 
-    try:
-        # # Create a pool to communicate with the worker threads
-        pool = Pool(processes=nthreads)
-        for cut in cutset:
-            ir_sample = random.choice(irlist)
-            SNR = np.random.uniform(10, 20)
-            tracks = cut.tracks
+    pool = Pool(processes=nthreads)
+    for cut in cutset:
+        ir_sample = random.choice(irlist)
+        SNR = np.random.uniform(10, 20)
+        tracks = cut.tracks
+        try:
             for c in tracks:
                 speech_path = c.cut.recording.sources[0].source
                 filepath, filename = os.path.split(speech_path)
@@ -116,8 +115,9 @@ if __name__ == "__main__":
                     args=(speech_path, output_path + filename, ir_sample),
                     callback=update,
                 )
-    except Exception as e:
-        print(str(e))
-        pool.close()
+        except Exception as e:
+            print(cut)
+            print(str(e))
+            pool.close()
     pool.close()
     pool.join()
