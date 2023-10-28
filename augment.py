@@ -102,7 +102,13 @@ if __name__ == "__main__":
         tracks = cut.tracks
         try:
             for c in tracks:
-                speech_path = c.cut.recording.sources[0].source
+                try:
+                    speech_path = c.cut.recording.sources[0].source
+                except e:
+                    print(cut.id)
+                    print(c.id)
+                    print(e)
+                    exit(1)
                 filepath, filename = os.path.split(speech_path)
                 output_path = (
                     filepath.replace(speech_folder, output_folder) + f"/{cut.id}/"
