@@ -116,7 +116,6 @@ if __name__ == "__main__":
                     callback=update,
                 )
         except Exception as e:
-            print(cut)
             print(str(e))
             pool.close()
     pool.close()
