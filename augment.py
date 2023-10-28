@@ -99,7 +99,6 @@ if __name__ == "__main__":
     pool = Pool(processes=nthreads)
     for cut in cutset:
         ir_sample = random.choice(irlist)
-        SNR = np.random.uniform(10, 20)
         tracks = cut.tracks
         try:
             for c in tracks:
