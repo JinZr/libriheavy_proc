@@ -107,7 +107,7 @@ if __name__ == "__main__":
 
     # pool = Pool(processes=nthreads)
     for cut in cutset:
-        ir_sample = random.choices(irlist, k=len(cut.tracks))
+        ir_samples = random.choices(irlist, k=len(cut.tracks))
         tracks = cut.tracks
         new_cut = deepcopy(cut)
         try:
@@ -123,7 +123,7 @@ if __name__ == "__main__":
                     )
                     if not os.path.exists(os.path.split(output_path)[0]):
                         os.makedirs(os.path.split(output_path)[0])
-                    augment_data(speech_path, output_path + filename, ir_sample)
+                    augment_data(speech_path, output_path + filename, ir_samples[index])
 
                     new_cut.tracks[index].cut.recording.sources[0].source = (
                         output_path + filename
@@ -148,7 +148,9 @@ if __name__ == "__main__":
                             )
                             if not os.path.exists(os.path.split(output_path)[0]):
                                 os.makedirs(os.path.split(output_path)[0])
-                            augment_data(speech_path, output_path + filename, ir_sample)
+                            augment_data(
+                                speech_path, output_path + filename, ir_samples[index]
+                            )
 
                             new_cut.tracks[index].cut.tracks[
                                 i_index
@@ -178,7 +180,9 @@ if __name__ == "__main__":
                                     ):
                                         os.makedirs(os.path.split(output_path)[0])
                                     augment_data(
-                                        speech_path, output_path + filename, ir_sample
+                                        speech_path,
+                                        output_path + filename,
+                                        ir_samples[index],
                                     )
 
                                     new_cut.tracks[index].cut.tracks[
@@ -223,7 +227,7 @@ if __name__ == "__main__":
                                             augment_data(
                                                 speech_path,
                                                 output_path + filename,
-                                                ir_sample,
+                                                ir_samples[index],
                                             )
 
                                             new_cut.tracks[index].cut.tracks[
