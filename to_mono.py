@@ -1,4 +1,5 @@
 import argparse
+import os
 import random
 
 from lhotse import load_manifest_lazy
@@ -36,6 +37,9 @@ new_cutset = []
 new_mono_cutset = []
 
 audio_path = f"/star-data/rui/libriheavy_ovlp/{dset}"
+
+if not os.path.exists(audio_path):
+    os.makedirs(audio_path)
 
 for cut in tqdm(cutset, desc="Processing cuts"):
     out_cut = cut.drop_features()
