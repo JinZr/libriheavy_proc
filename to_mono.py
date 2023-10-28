@@ -42,19 +42,22 @@ if not os.path.exists(audio_path):
     os.makedirs(audio_path)
 
 for cut in tqdm(cutset, desc="Processing cuts"):
-    out_cut = cut.drop_features()
-    snrs = [random.uniform(-5, 5) for _ in range(len(cut.tracks))]
-    for i, (track, snr) in enumerate(zip(out_cut.tracks, snrs)):
-        if i == 0:
-            # Skip the first track since it is the reference
-            continue
-        track.snr = snr
-    new_cutset.append(out_cut)
+    try:
+        out_cut = cut.drop_features()
+        snrs = [random.uniform(-5, 5) for _ in range(len(cut.tracks))]
+        for i, (track, snr) in enumerate(zip(out_cut.tracks, snrs)):
+            if i == 0:
+                # Skip the first track since it is the reference
+                continue
+            track.snr = snr
+        new_cutset.append(out_cut)
 
-    mono_cut = cut.to_mono()
-    new_mono_cutset.append(mono_cut)
+        mono_cut = cut.to_mono()
+        new_mono_cutset.append(mono_cut)
 
-    mono_cut.save_audio(audio_path + "/" + mono_cut.id + ".flac")
+        mono_cut.save_audio(audio_path + "/" + mono_cut.id + ".flac")
+    except:
+        continue
 
 new_cutset = CutSet.from_cuts(new_cutset)
 new_cutset.to_jsonl(output + "/" + manifest.split(".")[0] + "_snr_aug.jsonl.gz")
