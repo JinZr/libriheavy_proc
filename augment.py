@@ -125,8 +125,6 @@ if __name__ == "__main__":
                         os.makedirs(os.path.split(output_path)[0])
                     augment_data(speech_path, output_path + filename, ir_sample)
 
-                    update()
-
                     new_cut.tracks[index].cut.recording.sources[0].source = (
                         output_path + filename
                     )
@@ -152,8 +150,6 @@ if __name__ == "__main__":
                                 os.makedirs(os.path.split(output_path)[0])
                             augment_data(speech_path, output_path + filename, ir_sample)
 
-                            update()
-
                             new_cut.tracks[index].cut.tracks[
                                 i_index
                             ].cut.recording.sources[0].source = (output_path + filename)
@@ -164,9 +160,12 @@ if __name__ == "__main__":
                             # )
 
         except Exception as e:
+            print(cut.id)
             print(str(e))
             # pool.close()
         new_cuts.append(new_cut)
+        update()
+
     # pool.close()
     # pool.join()
     pbar.close()
