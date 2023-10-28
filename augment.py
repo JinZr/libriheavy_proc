@@ -105,7 +105,7 @@ if __name__ == "__main__":
     speech_folder = "/star-kw/data/libri-light/"
     output_folder = "/star-data/rui/libriheavy_reverb/"
 
-    pool = Pool(processes=nthreads)
+    # pool = Pool(processes=nthreads)
     for cut in cutset:
         ir_sample = random.choice(irlist)
         tracks = cut.tracks
@@ -123,18 +123,18 @@ if __name__ == "__main__":
                     )
                     if not os.path.exists(os.path.split(output_path)[0]):
                         os.makedirs(os.path.split(output_path)[0])
-                    pool.apply_async(
-                        augment_data,
-                        args=(speech_path, output_path + filename, ir_sample),
-                    )
-                    # augment_data(speech_path, output_path + filename, ir_sample)
+                    augment_data(speech_path, output_path + filename, ir_sample)
 
-                    # update()
+                    update()
 
                     new_cut.tracks[index].cut.recording.sources[0].source = (
                         output_path + filename
                     )
-
+                    # pool.apply_async(
+                    # augment_data,
+                    # args=(speech_path, output_path + filename, ir_sample),
+                    # callback=update,
+                    # )
                 elif c.type == "MixedCut":
                     t_tracks = c.tracks
                     for i_index, c_c in enumerate(t_tracks):
@@ -150,20 +150,23 @@ if __name__ == "__main__":
                             )
                             if not os.path.exists(os.path.split(output_path)[0]):
                                 os.makedirs(os.path.split(output_path)[0])
-                            pool.apply_async(
-                                augment_data,
-                                args=(speech_path, output_path + filename, ir_sample),
-                            )
+                            augment_data(speech_path, output_path + filename, ir_sample)
+
+                            update()
 
                             new_cut.tracks[index].cut.tracks[
                                 i_index
                             ].cut.recording.sources[0].source = (output_path + filename)
+                            # pool.apply_async(
+                            # augment_data,
+                            # args=(speech_path, output_path + filename, ir_sample),
+                            # callback=update,
+                            # )
 
         except Exception as e:
             print(str(e))
-            pool.close()
+            # pool.close()
         new_cuts.append(new_cut)
-        update()
     # pool.close()
     # pool.join()
     pbar.close()
