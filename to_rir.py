@@ -96,10 +96,10 @@ for cut in tqdm(cutset, desc="Processing cuts"):
     ir_sample = random.choice(irlist)
     augment_data(
         flac_f,
-        audio_path + flac_f.split("/")[-1],
+        audio_path + "/" + flac_f.split("/")[-1],
         ir_sample,
     )
-    out_cut.recording.sources[0].source = audio_path + flac_f.split("/")[-1]
+    out_cut.recording.sources[0].source = audio_path + "/" + flac_f.split("/")[-1]
 
     reverb_cuts.append(out_cut)
 
